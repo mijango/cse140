@@ -81,7 +81,7 @@ main()
     cout << "Program terminated:" << endl;
     cout << "total executime is " << << "cycles" << endl;   
 
-    //out for sample_part2.txt
+    //output for sample_part2.txt
     cout << "total_clock_cycles 1:" << endl;
     cout << "$ra is modified to" <<  << endl;
     cout << "pc is modified to" << << endl;
