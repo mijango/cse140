@@ -25,9 +25,10 @@ int reg_write, reg_dst;//add more
 //helper functions
 string readOpcode(string);
 int binaryToDec(string);
-void registerInstruction(string);
-void jumpInstruction(string);
-void immediateInstruction(string);
+void rtypeInstruction(string);
+void jtypeInstruction(string);
+void itypeInstruction(string);
+string signExtension(string);
 
 
 //other functions
@@ -42,21 +43,20 @@ void jump_target()
 
 void decode(string instruction)
 {
-    //integer registerfile array with 32 entries initialized to have all zeros
-
     //get type of instruction, from bits 31-26
-    string type = readOpcode(instruction.substr(0,6);
+    string type = readOpcode(instruction.substr(0,6));
     
     if(type == "r") {
-        registerInstruction(instruction);
+        rtypeInstruction(instruction);
     }
     else if(type == "j") {
-        jumpInstruction(instruction);
+        jtypeInstruction(instruction);
     }
     else {
-        immediateInstruction(instruction);
+        itypeInstruction(instruction);
     }
 }
+
 void execute(string registerOne, string registerTwo, string alu_op)
 {
     //update alu_zero integer
@@ -169,4 +169,206 @@ main()
 
     cout << "Program terminated:" << endl;
     cout << "total executime is " << << "cycles" << endl;     
+}
+
+//reading in opcode and matching type
+string readOpcode(string opcode) {
+  if(opcode == "000000") {
+    return "r";
+  }
+  else if(opcode == "000010" || opcode == "000011") {
+    return "j";
+  }
+  else {
+    return "i";
+  }
+}
+
+//converting the binary given as string into decimal value
+int binaryToDec(string str) {
+  int binaryVal = 0;
+  double decimalVal = 0;
+  //converting to decimal
+  for(int i = str.size()-1, exponent = 0; i >= 0; i--, exponent++) {
+    binaryVal = stoi(str.substr(i,1));
+    decimalVal += binaryVal*pow(2,exponent);
+  }
+  int result = decimalVal;
+  return result;
+}
+
+//converting the binary given as string into decimal value
+string decToBinary(int i) {
+  //converting to decimal
+  string s = bitset<32>(i).to_string();
+  return s;
+}
+
+//decoding a register instruction
+void rtypeInstruction(string code) {
+  string operation = "";
+  int rs, rt, rd, shamt, funct;
+
+  //finding operation and funct
+  funct = binaryToDec(code.substr(26,6));
+
+  if(funct == 32) {
+    operation = "add";
+  }
+  else if(funct == 33) {
+    operation = "addu";
+  }
+  else if(funct == 36) {
+    operation = "addu";
+  }
+  else if(funct == 8) {
+    operation = "jr";
+  }
+  else if(funct == 39) {
+    operation = "nor";
+  }
+  else if(funct == 37) {
+    operation = "or";
+  }
+  else if(funct == 42) {
+    operation = "slt";
+  }
+  else if(funct == 43) {
+    operation = "sltu";
+  }
+  else if(funct == 0) {
+    operation = "sll";
+  }
+  else if(funct == 2) {
+    operation = "srl";
+  }
+  else if(funct == 34) {
+    operation = "sub";
+  }
+  else if(funct == 35) {
+    operation = "subu";
+  }
+
+  //finding registers and shamt
+  rs = binaryToDec(code.substr(6,5));
+  rt = binaryToDec(code.substr(11,5));
+  rd = binaryToDec(code.substr(16,5));
+  shamt = binaryToDec(code.substr(21,5));
+
+
+
+//   //printing instruction
+//   cout<<"Instruction Type: R"<<endl;
+//   cout<<"Operation: "<<operation<<endl;
+//   cout<<"Rs: $"<<rs<<endl;
+//   cout<<"Rt: $"<<rt<<endl;
+//   cout<<"Rd: $"<<rd<<endl;
+//   cout<<"Shamt: "<<shamt<<endl;
+//   cout<<"Funct: "<<funct<<endl;
+}
+
+//decoding a immediate instruction
+void itypeInstruction(string code) {
+  string operation = "";
+  int rs, rt, op, immediate;
+
+  //finding registers and shamt
+  rs = binaryToDec(code.substr(6,5));
+  rt = binaryToDec(code.substr(11,5));
+  immediate = binaryToDec(code.substr(16,16));
+  
+  //finding op
+  op = binaryToDec(code.substr(0,6));
+
+  if(op == 8) {
+    operation = "addi";
+  }
+  else if(op == 9) {
+    operation = "addiu";
+  }
+  else if(op == 12) {
+    operation = "andi";
+  }
+  else if(op == 4) {
+    operation = "beq";
+  }
+  else if(op == 5) {
+    operation = "bne";
+  }
+  else if(op == 36) {
+    operation = "lbu";
+  }
+  else if(op == 37) {
+    operation = "lhu";
+  }
+  else if(op == 48) {//
+    operation = "ll";
+  }
+  else if(op == 15) {//
+    operation = "lui";
+  }
+  else if(op == 35) {
+    operation = "lw";
+  }
+  else if(op == 13) {
+    operation = "ori";
+  }
+  else if(op == 10) {
+    operation = "slti";
+  }
+  else if(op == 11) {
+    operation = "sltiu";
+  }
+  else if(op == 40) {
+    operation = "sb";
+  }
+  else if(op == 56) {//
+    operation = "sc";
+  }
+  else if(op == 41) {
+    operation = "sh";
+  }
+  else if(op == 43) {
+    operation = "sw";
+  }
+  
+//   //printing instruction
+//   cout<<"Instruction Type: I"<<endl;
+//   cout<<"Operation: "<<operation<<endl;
+//   cout<<"Rs: $"<<rs<<endl;
+//   cout<<"Rt: $"<<rt<<endl;
+//   cout<<"Immediate: "<<immediate<<endl;
+}
+
+string signExtension(string immediate) 
+  {     
+      string extended = "";
+      //keep positive 
+      extended = "0000000000000000";
+      extended += immediate;
+      return extended;
+  }
+
+//decoding a jump instruction
+void jtypeInstruction(string code) {
+  string operation = "";
+  int op, immediate;
+
+  //finding operation
+  op = binaryToDec(code.substr(0,6));
+
+  if(op == 2) {
+    operation = "j";
+  }
+  else if(op == 3) {
+    operation = "jal";
+  }
+
+  //finding address
+  immediate = binaryToDec(code.substr(6, 26));
+
+  //printing instruction
+  cout<<"Instruction Type: J"<<endl;
+  cout<<"Operation: "<<operation<<endl;
+  cout<<"Immediate: "<<immediate<<endl;
 }
