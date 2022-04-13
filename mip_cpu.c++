@@ -20,7 +20,10 @@ int jump_target = 0;
 int alu_zero = 0;
 int branch_target = 0;
 int total_clock_cycles = 0;
-int reg_write, reg_dst;//add more
+//control unit functions
+int reg_write, reg_dst;
+int branch, alu_src, inst_type, mem_write, mem_to_reg;
+int mem_read, jump;
 
 //helper functions
 string readOpcode(string);
@@ -86,16 +89,82 @@ void execute(string registerOne, string registerTwo, string alu_op)
 void mem()
 {
     int d_mem[32] = 0;
+    //each entry will be considered as one 4-byte memory space
+
+    //receive memory address for LW AND SW
+    
+    //mem executes references instructions: LW, SW
+
 }
 
 void writebrack()
 {
+  //writes back to register file
 
+  //increment total_clocl_cycles by 1 when one instruction is finished
+  total_clock_cycles = total_clock_cycles + 1;
 }
 
-void control_unit()
+void control_unit(string opcode)
 {
-
+  //receive the 6 bit opcode value and generate 9 control signals
+  // r format add,sub,and,or,slt,nor
+  if (opcode == "000000") 
+    {                      
+        reg_write = 1;
+        reg_dst = 1;
+        branch = 0;
+        alu_src = 0;
+        inst_type = 1;
+        mem_write = 0;
+        mem_to_reg = 0;
+        mem_read = 0;
+        jump = 0;
+    }
+    // lw
+    if (opcode == "100011")
+    { 
+        reg_write = 1;
+        reg_dst = 0;
+        branch = 0;
+        alu_src = 1;
+        inst_type = 0;
+        mem_write = 0;
+        mem_to_reg = 1;
+        mem_read = 1;
+        jump = 0;
+    }
+    // sw
+    if (opcode == "101011")
+    { 
+        reg_write = 0;
+        branch = 0;
+        alu_src = 1;
+        inst_type = 0;
+        mem_write = 1;
+        mem_read = 0;
+        jump = 0;
+    }
+    // beq
+    if (opcode == "000100")
+    { 
+        reg_write = 0;
+        branch = 1;
+        alu_src = 0;
+        inst_type = 0;
+        mem_write = 0;
+        mem_read = 0;
+        jump = 0;
+    }
+    // J format
+    if (opcode == "000011" || opcode == "000010") 
+    {
+        reg_write = 0;
+        branch = 0;
+        mem_write = 0;
+        mem_read = 0;
+        jump = 1;
+    }
 }
 //fetch () function that grabs one instruction per cycle
 string fetch(int pc)
