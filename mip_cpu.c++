@@ -21,9 +21,9 @@ int alu_zero = 0;
 int branch_target = 0;
 int total_clock_cycles = 0;
 //control unit functions
-int reg_write, reg_dst;
-int branch, alu_src, inst_type, mem_write, mem_to_reg;
-int mem_read, jump;
+int reg_write, reg_dst = 0;
+int branch, alu_src, inst_type, mem_write, mem_to_reg = 0;
+int mem_read, jump = 0;
 
 //helper functions
 string readOpcode(string);
