@@ -11,7 +11,6 @@
 
 using namespace std;
 
-int registerfile[32] = {0};
 string textfile = "sample_part1.text";
 
 //global variables
@@ -20,10 +19,23 @@ int jump_target = 0;
 int alu_zero = 0;
 int branch_target = 0;
 int total_clock_cycles = 0;
-//control unit functions
-int reg_write, reg_dst = 0;
-int branch, alu_src, inst_type, mem_write, mem_to_reg = 0;
-int mem_read, jump = 0;
+int registerfile[32] = {0};
+//variable where pc + 4 is stored
+int next_pc = 0;
+
+//rtype instructions
+ int rs, rt, rd, shamt, funct;
+
+//Global control unit signals
+int reg_write = 0;
+int reg_dst = 0;
+int branch = 0;
+int alu_src = 0;
+int inst_type = 0;
+int mem_write = 0;
+int mem_to_reg = 0;
+int mem_read = 0;
+int jump = 0;
 
 //helper functions
 string readOpcode(string);
@@ -33,17 +45,40 @@ void jtypeInstruction(string);
 void itypeInstruction(string);
 string signExtension(string);
 
+//string fetch () function that grabs one instruction per cycle
+string fetch(int pc)
+{  
+    string instruction;
+    fstream file;
+    string line;
+    file.open(textfile);
+
+    int current = 1;
+    int target = pc/4;
+    while(getline(file, line)) {
+        if(current == target) {
+        pc += 4;
+        instruction = line;
+        int next_pc = pc + 4;
+        break;
+        return line;
+        }
+        current++;
+    }
+    return "empty";
+}
 
 //other functions
 void branch_target()
 {
-
+    //shift left
 }
 void jump_target()
 {
 
 }
 
+//decode() will read values from a register file
 void decode(string instruction)
 {
     //get type of instruction, from bits 31-26
@@ -60,6 +95,7 @@ void decode(string instruction)
     }
 }
 
+//computation with alu
 void execute(string registerOne, string registerTwo, string alu_op)
 {
     //update alu_zero integer
@@ -86,21 +122,42 @@ void execute(string registerOne, string registerTwo, string alu_op)
     }
 }
 
+//receive memory address to write for SW
 void mem()
 {
     int d_mem[32] = 0;
     //each entry will be considered as one 4-byte memory space
-
-    //receive memory address for LW AND SW
-    
-    //mem executes references instructions: LW, SW
-
+    //if mem_read
+    if(mem_read = 1)
+    {
+        int mem_data = d_mem[ int address/4];
+        write_back(rt, mem_data);
+    }
+    else
+    {
+        mem_write = 1;
+        d_mem[address/4] = register_file[rt];
+        write_back(r, address);
+    }
 }
 
-void writebrack()
+void write_back()
 {
   //writes back to register file
-
+    if(reg_write = 0)
+    {
+        d_mem[r] = value; 
+    }
+    if(mem_write = 0)
+    {
+        d_mem[r] = value;
+    }
+    else
+    {
+        reg_write = 1;
+        registe_file[r] = value;
+    }
+        
   //increment total_clocl_cycles by 1 when one instruction is finished
   total_clock_cycles = total_clock_cycles + 1;
 }
@@ -166,30 +223,7 @@ void control_unit(string opcode)
         jump = 1;
     }
 }
-//fetch () function that grabs one instruction per cycle
-string fetch(int pc)
-{
-    //variable where pc + 4 is stored
-    int next_pc = 0;
-    string instruction;
-    fstream file;
-    string line;
-    file.open(textfile);
 
-    int current = 1;
-    int target = pc/4;
-    while(getline(file, line)) {
-        if(current == target) {
-        pc += 4;
-        instruction = line;
-        next_pc = pc + 4;
-        break;
-        return line;
-        }
-        current++;
-    }
-    return "empty";
-}
 main()
 {
 
@@ -276,7 +310,6 @@ string decToBinary(int i) {
 //decoding a register instruction
 void rtypeInstruction(string code) {
   string operation = "";
-  int rs, rt, rd, shamt, funct;
 
   //finding operation and funct
   funct = binaryToDec(code.substr(26,6));
