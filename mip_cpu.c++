@@ -8,10 +8,11 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
-string textfile = "sample_part1.text";
+string textfiles[] = {"sample_part1.text", "sample_part2.text"};
 
 //global variables
 int pc = 0;
@@ -19,7 +20,11 @@ int jump_target = 0;
 int alu_zero = 0;
 int branch_target = 0;
 int total_clock_cycles = 0;
+
+//registers and their mapped values
+string registernames[] = {"$zero, $at, $v0, $v1, $a0, $a1, $a2, $a3, $t0, $t1, $t2, $t3, $t4, $t5, $t6, $t7, $s0, $s1, $s2, $s3, $s4, $s5, $s6, $s7, $t8, $t9, $k0, $k1, $gp, $sp, $fp, $ra"};
 int registerfile[32] = {0};
+
 //variable where pc + 4 is stored
 int next_pc = 0;
 
@@ -37,16 +42,8 @@ int mem_to_reg = 0;
 int mem_read = 0;
 int jump = 0;
 
-//helper functions
-string readOpcode(string);
-int binaryToDec(string);
-void rtypeInstruction(string);
-void jtypeInstruction(string);
-void itypeInstruction(string);
-string signExtension(string);
-
 //string fetch () function that grabs one instruction per cycle
-string fetch(int pc)
+string fetch(int pc, string textfile  )
 {  
     string instruction;
     fstream file;
@@ -55,28 +52,28 @@ string fetch(int pc)
 
     int current = 1;
     int target = pc/4;
+    instruction = "empty";
     while(getline(file, line)) {
         if(current == target) {
         pc += 4;
         instruction = line;
-        int next_pc = pc + 4;
         break;
-        return line;
         }
         current++;
     }
-    return "empty";
+    next_pc = pc + 4;
+    return instruction;
 }
 
-//other functions
-void branch_target()
-{
-    //shift left
-}
-void jump_target()
-{
-
-}
+//helper functions
+string readOpcode(string);
+int binaryToDec(string);
+void rtypeInstruction(string);
+void jtypeInstruction(string);
+void itypeInstruction(string);
+string signExtension(string);
+void jump_target(string);
+int branch_target(string);
 
 //decode() will read values from a register file
 void decode(string instruction)
@@ -102,24 +99,38 @@ void execute(string registerOne, string registerTwo, string alu_op)
     //calculate branch target
     //update branch_target
 
-    string function = "";
     int one = binaryToDec(registerOne);
     int two = binaryToDec(registerTwo);
     int result;
 
+    //ALU OP
     if(alu_op == "0000") {//AND
-        function = "AND";
-    } else if("0001") {//OR
-        function = "OR";
-    } else if("0010") {//add
-        function = "add";
-    } else if("0110") {//subtract
-        function = "subtract";
-    } else if("0111") {//set-on-less-than
-        function = "set-on-less-than";
-    } else if("1100") {//NOR
-        function = "NOR";
+        result = one & two;
+    } else if(alu_op == "0001") {//OR
+        result = one | two;
+    } else if(alu_op == "0010") {//add
+        result = one + two;
+    } else if(alu_op == "0110") {//subtract
+        result = one - two;
+    } else if(alu_op == "0111") {//set-on-less-than
+        if(one < two) {
+          result = 1;
+        } else {
+          result = 0;
+        }
+    } else if(alu_op == "1100") {//NOR
+        result = ~(one | two);
     }
+
+    //Zero_output
+    if(result == 0) {
+      alu_zero = 1;
+    } else {
+      alu_zero = 0;
+    }
+
+    //Branch target address
+    
 }
 
 //receive memory address to write for SW
@@ -226,52 +237,57 @@ void control_unit(string opcode)
 
 main()
 {
+    //mappign registers and labels to hashtable
+    unordered_map<string, int> regs;
+    for(int i = 0, i < sizeof(registernames)/sizeof(registernames[0]); i++) {
+      regs[registernames[i]] = registerfile[i];
+    }
+    
+    // //output for sample_part1.txt
+    // cout << "total_clock_cycles 1:" << endl;
+    // cout << "$t3 is modified to" << << endl;
+    // cout << "pc is modified to" << << endl;
 
-    //output for sample_part1.txt
-    cout << "total_clock_cycles 1:" << endl;
-    cout << "$t3 is modified to" << << endl;
-    cout << "pc is modified to" << << endl;
+    // cout << "total_clock_cycles 2:" << endl;
+    // cout << "$t5 is modified to" << << endl;
+    // cout << "pc is modified to" << << endl;
 
-    cout << "total_clock_cycles 2:" << endl;
-    cout << "$t5 is modified to" << << endl;
-    cout << "pc is modified to" << << endl;
+    // cout << "total_clock_cycles 3:" << endl;
+    // cout << "$s1 is modified to" << << endl;
+    // cout << "pc is modified to" << << endl;
 
-    cout << "total_clock_cycles 3:" << endl;
-    cout << "$s1 is modified to" << << endl;
-    cout << "pc is modified to" << << endl;
+    // cout << "total_clock_cycles 4:" << endl;
+    // cout << "pc is modified to" << << endl;
 
-    cout << "total_clock_cycles 4:" << endl;
-    cout << "pc is modified to" << << endl;
+    // cout << "total_clock_cycles 5:" << endl;
+    // cout << "memory 0x70 is modified to" <<  << endl;
+    // cout << "pc is modified to" << << endl;
 
-    cout << "total_clock_cycles 5:" << endl;
-    cout << "memory 0x70 is modified to" <<  << endl;
-    cout << "pc is modified to" << << endl;
+    // cout << "Program terminated:" << endl;
+    // cout << "total executime is " << << "cycles" << endl;   
 
-    cout << "Program terminated:" << endl;
-    cout << "total executime is " << << "cycles" << endl;   
+    // //output for sample_part2.txt
+    // cout << "total_clock_cycles 1:" << endl;
+    // cout << "$ra is modified to" <<  << endl;
+    // cout << "pc is modified to" << << endl;
 
-    //output for sample_part2.txt
-    cout << "total_clock_cycles 1:" << endl;
-    cout << "$ra is modified to" <<  << endl;
-    cout << "pc is modified to" << << endl;
+    // cout << "total_clock_cycles 2:" << endl;
+    // cout << "$t0 is modified to" << << endl;
+    // cout << "pc is modified to" << << endl;
 
-    cout << "total_clock_cycles 2:" << endl;
-    cout << "$t0 is modified to" << << endl;
-    cout << "pc is modified to" << << endl;
+    // cout << "total_clock_cycles 3:" << endl;
+    // cout << "$v0 is modified to" << << endl;
+    // cout << "pc is modified to" << << endl;
 
-    cout << "total_clock_cycles 3:" << endl;
-    cout << "$v0 is modified to" << << endl;
-    cout << "pc is modified to" << << endl;
+    // cout << "total_clock_cycles 4:" << endl;
+    // cout << "pc is modified to" << << endl;
 
-    cout << "total_clock_cycles 4:" << endl;
-    cout << "pc is modified to" << << endl;
+    // cout << "total_clock_cycles 5:" << endl;
+    // cout << "memory 0x70 is modified to" <<  << endl;
+    // cout << "pc is modified to" << << endl;
 
-    cout << "total_clock_cycles 5:" << endl;
-    cout << "memory 0x70 is modified to" <<  << endl;
-    cout << "pc is modified to" << << endl;
-
-    cout << "Program terminated:" << endl;
-    cout << "total executime is " << << "cycles" << endl;     
+    // cout << "Program terminated:" << endl;
+    // cout << "total executime is " << << "cycles" << endl;     
 }
 
 //reading in opcode and matching type
@@ -305,6 +321,33 @@ string decToBinary(int i) {
   //converting to decimal
   string s = bitset<32>(i).to_string();
   return s;
+}
+
+string signExtension(string immediate) {     
+  string extended = "";
+  //immediate is 16 bits, add 16 zeros in front
+  extended = "0000000000000000";
+  extended += immediate;
+  return extended;
+}
+
+void jump_target(string instruction) {
+  string temp;
+  string nextPCbinary = decToBinary(next_pc);
+
+  //getting the first four 4 bits of the next_pc value and adding the 26 bits from the instruction
+  temp = nextPCbinary.substr(0, 4) + instruction.substr(3, 26) + "00";
+  //setting the jump target equal to an integer value
+  jump_target = binaryToDec(temp;)
+}
+
+int branch_target(string immediate)
+{   
+    //shift left immediate value by 2
+    int shifted = immediate.substr(0,30) + "00";
+    //add next pc to shifted immediate to calculte the branch address
+    int target = binaryToDec(shifted) + next_pc;
+    return target;
 }
 
 //decoding a register instruction
@@ -357,16 +400,6 @@ void rtypeInstruction(string code) {
   rd = binaryToDec(code.substr(16,5));
   shamt = binaryToDec(code.substr(21,5));
 
-
-
-//   //printing instruction
-//   cout<<"Instruction Type: R"<<endl;
-//   cout<<"Operation: "<<operation<<endl;
-//   cout<<"Rs: $"<<rs<<endl;
-//   cout<<"Rt: $"<<rt<<endl;
-//   cout<<"Rd: $"<<rd<<endl;
-//   cout<<"Shamt: "<<shamt<<endl;
-//   cout<<"Funct: "<<funct<<endl;
 }
 
 //decoding a immediate instruction
@@ -433,23 +466,8 @@ void itypeInstruction(string code) {
   else if(op == 43) {
     operation = "sw";
   }
-  
-//   //printing instruction
-//   cout<<"Instruction Type: I"<<endl;
-//   cout<<"Operation: "<<operation<<endl;
-//   cout<<"Rs: $"<<rs<<endl;
-//   cout<<"Rt: $"<<rt<<endl;
-//   cout<<"Immediate: "<<immediate<<endl;
-}
 
-string signExtension(string immediate) 
-  {     
-      string extended = "";
-      //keep positive 
-      extended = "0000000000000000";
-      extended += immediate;
-      return extended;
-  }
+}
 
 //decoding a jump instruction
 void jtypeInstruction(string code) {
@@ -468,9 +486,4 @@ void jtypeInstruction(string code) {
 
   //finding address
   immediate = binaryToDec(code.substr(6, 26));
-
-  //printing instruction
-  cout<<"Instruction Type: J"<<endl;
-  cout<<"Operation: "<<operation<<endl;
-  cout<<"Immediate: "<<immediate<<endl;
 }
