@@ -61,4 +61,5 @@ void control_unit(string opcode)
         mem_read = 0;
         jump = 1;
     }
+    //JAL and JR
 }
