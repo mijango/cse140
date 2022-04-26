@@ -9,6 +9,9 @@
 #include <fstream>
 #include <vector>
 #include <unordered_map>
+#include "mem.h"
+#include "write_back.h"
+#include "control_unit.h"
 
 using namespace std;
 
@@ -149,89 +152,6 @@ void mem()
         mem_write = 1;
         d_mem[address/4] = register_file[rt];
         write_back(r, address);
-    }
-}
-
-void write_back()
-{
-  //writes back to register file
-    if(reg_write = 0)
-    {
-        d_mem[r] = value; 
-    }
-    if(mem_write = 0)
-    {
-        d_mem[r] = value;
-    }
-    else
-    {
-        reg_write = 1;
-        registe_file[r] = value;
-    }
-        
-  //increment total_clocl_cycles by 1 when one instruction is finished
-  total_clock_cycles = total_clock_cycles + 1;
-}
-
-void control_unit(string opcode)
-{
-  //receive the 6 bit opcode value and generate 9 control signals
-  // r format add,sub,and,or,slt,nor
-  if (opcode == "000000") 
-    {                      
-        reg_write = 1;
-        reg_dst = 1;
-        branch = 0;
-        alu_src = 0;
-        inst_type = 1;
-        mem_write = 0;
-        mem_to_reg = 0;
-        mem_read = 0;
-        jump = 0;
-    }
-    // lw
-    if (opcode == "100011")
-    { 
-        reg_write = 1;
-        reg_dst = 0;
-        branch = 0;
-        alu_src = 1;
-        inst_type = 0;
-        mem_write = 0;
-        mem_to_reg = 1;
-        mem_read = 1;
-        jump = 0;
-    }
-    // sw
-    if (opcode == "101011")
-    { 
-        reg_write = 0;
-        branch = 0;
-        alu_src = 1;
-        inst_type = 0;
-        mem_write = 1;
-        mem_read = 0;
-        jump = 0;
-    }
-    // beq
-    if (opcode == "000100")
-    { 
-        reg_write = 0;
-        branch = 1;
-        alu_src = 0;
-        inst_type = 0;
-        mem_write = 0;
-        mem_read = 0;
-        jump = 0;
-    }
-    // J format
-    if (opcode == "000011" || opcode == "000010") 
-    {
-        reg_write = 0;
-        branch = 0;
-        mem_write = 0;
-        mem_read = 0;
-        jump = 1;
     }
 }
 
