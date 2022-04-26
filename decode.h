@@ -1,5 +1,6 @@
 #include <string>
 #include "conversions.h"
+#include "control_unit.h"
 
 //rtype instructions
  int rs, rt, rd, shamt, funct;
@@ -22,7 +23,8 @@ void decode(std::string instruction)
 {
     //get type of instruction, from bits 31-26
     std::string type = readOpcode(instruction.substr(0,6));
-    
+    //callinng control_unit function to update and generate control signals
+    control_unit();
     if(type == "r") {
         rtypeInstruction(instruction);
     }
