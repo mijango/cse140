@@ -48,9 +48,9 @@ main()
     }
     
     // //output for sample_part1.txt
-    // cout << "total_clock_cycles 1:" << endl;
-    // cout << "$t3 is modified to" << << endl;
-    // cout << "pc is modified to" << << endl;
+    cout << "total_clock_cycles" << total_clock_cycles ":" << endl;
+    cout << " "" " modify_register "is modified to" << hex << regs [modify_register]<< endl;
+    cout << "pc is modified to" << hex << regs [modify_register] << endl;
 
     // cout << "total_clock_cycles 2:" << endl;
     // cout << "$t5 is modified to" << << endl;
@@ -69,27 +69,5 @@ main()
 
     // cout << "Program terminated:" << endl;
     // cout << "total executime is " << << "cycles" << endl;   
-
-    // //output for sample_part2.txt
-    // cout << "total_clock_cycles 1:" << endl;
-    // cout << "$ra is modified to" <<  << endl;
-    // cout << "pc is modified to" << << endl;
-
-    // cout << "total_clock_cycles 2:" << endl;
-    // cout << "$t0 is modified to" << << endl;
-    // cout << "pc is modified to" << << endl;
-
-    // cout << "total_clock_cycles 3:" << endl;
-    // cout << "$v0 is modified to" << << endl;
-    // cout << "pc is modified to" << << endl;
-
-    // cout << "total_clock_cycles 4:" << endl;
-    // cout << "pc is modified to" << << endl;
-
-    // cout << "total_clock_cycles 5:" << endl;
-    // cout << "memory 0x70 is modified to" <<  << endl;
-    // cout << "pc is modified to" << << endl;
-
-    // cout << "Program terminated:" << endl;
-    // cout << "total executime is " << << "cycles" << endl;     
+   
 }
