@@ -64,7 +64,7 @@ main()
 
       if( == "empty") {
         readfile = false;
-        cout<<"program terminated:\ntotal execution time is"<<total_clock_cycles<<"cycles";
+        cout<<"program terminated:\ntotal execution time is" << total_clock_cycles <<"cycles";
       } else {
 
         //call decode
