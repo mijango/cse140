@@ -6,6 +6,10 @@
 #include <cmath>
 #include <string>
 #include <unordered_map>
+#include <conversions.h>
+#include <fetch.h>
+#include <decode.h>
+#include <execute.h>
 #include "mem.h"
 #include "write_back.h"
 #include "control_unit.h"
@@ -24,6 +28,7 @@ int total_clock_cycles = 0;
 //registers and their mapped values
 string registernames[] = {"$zero, $at, $v0, $v1, $a0, $a1, $a2, $a3, $t0, $t1, $t2, $t3, $t4, $t5, $t6, $t7, $s0, $s1, $s2, $s3, $s4, $s5, $s6, $s7, $t8, $t9, $k0, $k1, $gp, $sp, $fp, $ra"};
 int registerfile[32] = {0};
+string modify_register;
 
 //variable where pc + 4 is stored
 int next_pc = 0;
@@ -43,8 +48,35 @@ main()
 {
     //mappign registers and labels to hashtable
     unordered_map<string, int> regs;
+
     for(int i = 0; i < sizeof(registernames)/sizeof(registernames[0]); i++) {
       regs[registernames[i]] = registerfile[i];
+    }
+
+    cout<<hex<<regs[modify_register]<<endl;
+
+    bool readFile = true;
+
+    while(readFile) {
+      
+      //call fetch
+      string instruction = fetch(pc, next_pc, textfile[0]);
+
+      if( == "empty") {
+        readfile = false;
+        cout<<"program terminated:\ntotal execution time is"<<total_clock_cycles<<"cycles";
+      } else {
+
+        //call decode
+        decode(instruction)
+
+        //call execute
+
+        //call mem
+
+        //call writeback
+
+      }
     }
     
     // //output for sample_part1.txt
