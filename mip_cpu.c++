@@ -68,38 +68,18 @@ main()
       } else {
 
         //call decode
-        decode(instruction)
-
+        decode(instruction);
         //call execute
-
+        execute();
         //call mem
-
+        mem();
         //call writeback
-
+        write_back();
       }
     }
     
     // //output for sample_part1.txt
     cout << "total_clock_cycles" << total_clock_cycles ":" << endl;
     cout << " "" " modify_register "is modified to" << hex << regs [modify_register]<< endl;
-    cout << "pc is modified to" << hex << regs [modify_register] << endl;
-
-    // cout << "total_clock_cycles 2:" << endl;
-    // cout << "$t5 is modified to" << << endl;
-    // cout << "pc is modified to" << << endl;
-
-    // cout << "total_clock_cycles 3:" << endl;
-    // cout << "$s1 is modified to" << << endl;
-    // cout << "pc is modified to" << << endl;
-
-    // cout << "total_clock_cycles 4:" << endl;
-    // cout << "pc is modified to" << << endl;
-
-    // cout << "total_clock_cycles 5:" << endl;
-    // cout << "memory 0x70 is modified to" <<  << endl;
-    // cout << "pc is modified to" << << endl;
-
-    // cout << "Program terminated:" << endl;
-    // cout << "total executime is " << << "cycles" << endl;   
-   
+    cout << "pc is modified to" << hex << regs [modify_register] << endl; 
 }
