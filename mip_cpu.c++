@@ -78,7 +78,7 @@ main()
       }
     }
     
-    // //output for sample_part1.txt
+    // //output for sample_part1.txt and part2.txt excluding program termination
     cout << "total_clock_cycles" << total_clock_cycles ":" << endl;
     cout << " "" " modify_register "is modified to" << hex << regs [modify_register]<< endl;
     cout << "pc is modified to" << hex << regs [modify_register] << endl; 
