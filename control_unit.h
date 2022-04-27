@@ -1,65 +1,65 @@
-#include "control_unit.h"
 #include <iostream>
+#include <unordered_map>
 
-void control_unit(string opcode)
+void control_unit(std::string opcode, std::unordered_map<std::string, int> cu)
 {
   //receive the 6 bit opcode value and generate 9 control signals
   // r format add,sub,and,or,slt,nor
   if (opcode == "000000") 
     {                      
-        reg_write = 1;
-        reg_dst = 1;
-        branch = 0;
-        alu_src = 0;
-        inst_type = 1;
-        mem_write = 0;
-        mem_to_reg = 0;
-        mem_read = 0;
-        jump = 0;
+        cu["reg_write"] = 1;
+        cu["reg_dst"] = 1;
+        cu["branch"] = 0;
+        cu["alu_src"] = 0;
+        cu["inst_type"] = 1;
+        cu["mem_write"] = 0;
+        cu["mem_to_reg"] = 0;
+        cu["mem_read"] = 0;
+        cu["jump"] = 0;
     }
     // lw
     if (opcode == "100011")
     { 
-        reg_write = 1;
-        reg_dst = 0;
-        branch = 0;
-        alu_src = 1;
-        inst_type = 0;
-        mem_write = 0;
-        mem_to_reg = 1;
-        mem_read = 1;
-        jump = 0;
+        cu["reg_write"] = 1;
+        cu["reg_dst"] = 0;
+        cu["branch"] = 0;
+        cu["alu_src"] = 1;
+        cu["inst_type"] = 0;
+        cu["mem_write"] = 0;
+        cu["mem_to_reg"] = 1;
+        cu["mem_read"] = 1;
+        cu["jump"] = 0;
     }
     // sw
     if (opcode == "101011")
     { 
-        reg_write = 0;
-        branch = 0;
-        alu_src = 1;
-        inst_type = 0;
-        mem_write = 1;
-        mem_read = 0;
-        jump = 0;
+        cu["reg_write"] = 0;
+        cu["branch"] = 0;
+        cu["alu_src"] = 1;
+        cu["inst_type"] = 0;
+        cu["mem_write"] = 1;
+        cu["mem_read"] = 0;
+        cu["jump"] = 0;
     }
     // beq
     if (opcode == "000100")
     { 
-        reg_write = 0;
-        branch = 1;
-        alu_src = 0;
-        inst_type = 0;
-        mem_write = 0;
-        mem_read = 0;
-        jump = 0;
+        cu["reg_write"] = 0;
+        cu["branch"] = 1;
+        cu["alu_src"] = 0;
+        cu["inst_type"] = 0;
+        cu["mem_write"] = 0;
+        cu["mem_read"] = 0;
+        cu["jump"] = 0;
     }
     // J format
     if (opcode == "000011" || opcode == "000010") 
     {
-        reg_write = 0;
-        branch = 0;
-        mem_write = 0;
-        mem_read = 0;
-        jump = 1;
+        cu["reg_write"] = 0;
+        cu["branch"] = 0;
+        cu["mem_write"] = 0;
+        cu["mem_read"] = 0;
+        cu["jump"] = 1;
     }
     //JAL and JR
 }

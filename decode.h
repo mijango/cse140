@@ -5,8 +5,29 @@
 //rtype instructions
  int rs, rt, rd, shamt, funct;
 
+//decode() will read instruction values from a register file and use the control units
+void decode(std::string instruction, std::unordered_map<std::string, int> cu, std::unordered_map<std::string, int> regs)
+{
+    //get type of instruction, from bits 31-26
+    std::string type = readOpcode(instruction.substr(0,6));
+
+    //calling control_unit function to update and generate control signals
+    control_unit();
+    if(type == "r") {
+        rtypeInstruction(instruction, cu, regs);
+    }
+    else if(type == "j") {
+        jtypeInstruction(instruction, cu, regs);
+    }
+    else {
+        itypeInstruction(instruction, cu, regs);
+    }
+}
+
  //reading in opcode and matching type
 std::string readOpcode(std::string opcode) {
+  
+  
   if(opcode == "000000") {
     return "r";
   }
@@ -18,26 +39,8 @@ std::string readOpcode(std::string opcode) {
   }
 }
 
-//decode() will read values from a register file
-void decode(std::string instruction)
-{
-    //get type of instruction, from bits 31-26
-    std::string type = readOpcode(instruction.substr(0,6));
-    //callinng control_unit function to update and generate control signals
-    control_unit();
-    if(type == "r") {
-        rtypeInstruction(instruction);
-    }
-    else if(type == "j") {
-        jtypeInstruction(instruction);
-    }
-    else {
-        itypeInstruction(instruction);
-    }
-}
-
 //decoding a register instruction
-void rtypeInstruction(std:: string code) {
+void rtypeInstruction(std:: string code, std::string instruction, std::unordered_map<std::string, int> cu, std::unordered_map<std::string, int> regs) {
   std::string operation = "";
 
   //finding operation and funct
@@ -89,7 +92,7 @@ void rtypeInstruction(std:: string code) {
 }
 
 //decoding a immediate instruction
-void itypeInstruction(std::string code) {
+void itypeInstruction(std::string code, std::string instruction, std::unordered_map<std::string, int> cu, std::unordered_map<std::string, int> regs) {
   std::string operation = "";
   int rs, rt, op, immediate;
 
@@ -156,7 +159,7 @@ void itypeInstruction(std::string code) {
 }
 
 //decoding a jump instruction
-void jtypeInstruction(std::string code) {
+void jtypeInstruction(std::string code, std::string instruction, std::unordered_map<std::string, int> cu, std::unordered_map<std::string, int> regs) {
   std::string operation = "";
   int op, immediate;
 
