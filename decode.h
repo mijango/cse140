@@ -7,34 +7,34 @@
 //rtype instructions
  int opcode, rs, rt, rd, shamt, funct, immediate;
  std::string aluOp;
- Data data;
 
 //decode()  will read instruction values from a register file and use the control units
-Data decode(std::string instruction, std::unordered_map<std::string, int> &cu, std::unordered_map<std::string, int> &regs, std::string names[])
+void decode(std::string instruction, std::unordered_map<std::string, int> &cu, std::unordered_map<std::string, int> &regs, std::string names[], int jump_target, int next_pc, Data &data)
 {
     //get type of instruction, from bits 31-26
-    data.type = readOpcode(instruction.substr(0,6));
+    data.type = readOpcode(instruction.substr(0,6), data);
     data.opcode = binaryToDec(data.type);
 
     //calling control_unit function to update and generate control signals
-    control_unit(cu);
+    control_unit(data.opcode, cu);
 
     //reading registers depending on type of instruction
     if(data.type == "r") {
-        rtypeInstruction(instruction, regs);
+        rtypeInstruction(instruction, regs, names, data);
     }
     else if(data.type == "j") {
-        jtypeInstruction(instruction, regs);
+        jtypeInstruction(instruction, regs, names, data);
     }
     else {
-        itypeInstruction(instruction, regs);
+        itypeInstruction(instruction, regs, names, data);
     }
 
-    return data;
+    jumpTarget(instruction, jump_target, next_pc);
+
 }
 
  //reading in opcode to find type
-std::string readOpcode(std::string opcode) {
+std::string readOpcode(std::string opcode, Data &data) {
   
   if(data.opcode == "000000") {
     return "r";
@@ -48,7 +48,7 @@ std::string readOpcode(std::string opcode) {
 }
 
 //decoding a register instruction
-void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &regs, std::string names[]) {
+void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data) {
   std::string operation = "";
 
   //finding registers and shamt
@@ -71,7 +71,7 @@ void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &r
   data.funct = binaryToDec(code.substr(26,6));
 
   //getting alu op
-  data.aluOp = alu_control("10", data.funct);
+  data.aluOp = alu_control(data.funct);
 
   if(funct == 32) {
     operation = "add";
@@ -113,7 +113,7 @@ void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &r
 }
 
 //decoding a immediate instruction
-void itypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[]) {
+void itypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data) {
   std::string operation = "";
 
   //finding registers and shamt
@@ -125,67 +125,67 @@ void itypeInstruction(std::string code, std::unordered_map<std::string, int> &re
   data.rsName = names[data.rs];
   data.rs = regs[data.rsName];
 
-  data.rtname = names[data.rt];
+  data.rtName = names[data.rt];
   data.rt = regs[data.rtName];
   
-  //finding op
-  data.opcode = binaryToDec(code.substr(0,6));
+  //converting op
+  int op = binaryToDec(code.substr(0,6));
 
-  if(data.opcode == 8) {
+  if(op == 8) {
     operation = "addi";
   }
-  else if(data.opcode == 9) {
+  else if(op == 9) {
     operation = "addiu";
   }
-  else if(data.opcode == 12) {
+  else if(op == 12) {
     operation = "andi";
   }
-  else if(data.opcode == 4) {
+  else if(op == 4) {
     operation = "beq";
     //getting alu op for beq
     data.aluOp = alu_control("01");
     return;
   }
-  else if(data.opcode == 5) {
+  else if(op == 5) {
     operation = "bne";
   }
-  else if(data.opcode == 36) {
+  else if(op == 36) {
     operation = "lbu";
   }
-  else if(data.opcode == 37) {
+  else if(op == 37) {
     operation = "lhu";
   }
-  else if(data.opcode == 48) {
+  else if(op == 48) {
     operation = "ll";
   }
-  else if(data.opcode == 15) {
+  else if(op == 15) {
     operation = "lui";
   }
-  else if(data.opcode == 35) {
+  else if(op == 35) {
     operation = "lw";
     //getting alu op for lw
     data.aluOp = alu_control("00");
     return;
   }
-  else if(data.opcode == 13) {
+  else if(op == 13) {
     operation = "ori";
   }
-  else if(data.opcode == 10) {
+  else if(op == 10) {
     operation = "slti";
   }
-  else if(data.opcode == 11) {
+  else if(op == 11) {
     operation = "sltiu";
   }
-  else if(data.opcode == 40) {
+  else if(op == 40) {
     operation = "sb";
   }
-  else if(data.opcode == 56) {//
+  else if(op == 56) {//
     operation = "sc";
   }
-  else if(data.opcode == 41) {
+  else if(op == 41) {
     operation = "sh";
   }
-  else if(data.opcode == 43) {
+  else if(op == 43) {
     operation = "sw";
     //getting alu op for sw
     data.aluOp = alu_control("00");
@@ -194,19 +194,19 @@ void itypeInstruction(std::string code, std::unordered_map<std::string, int> &re
 }
 
 //decoding a jump instruction
-void jtypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[]) {
+void jtypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data) {
   std::string operation = "";
 
   //finding address
   data.immediate = binaryToDec(code.substr(6, 26));
 
   //finding operation
-  data.opcode = binaryToDec(code.substr(0,6));
+  int op = binaryToDec(code.substr(0,6));
 
-  if(data.opcode == 2) {
+  if(op == 2) {
     operation = "j";
   }
-  else if(data.opcode == 3) {
+  else if(op == 3) {
     operation = "jal";
   }
 }
@@ -217,4 +217,14 @@ std::string signExtension(std::string immediate) {
   extended = "0000000000000000";
   extended += immediate;
   return extended;
+}
+
+void jumpTarget(std::string instruction, int jump_target, int next_pc) {
+  std::string temp;
+  std::string nextPCbinary = decToBinary(next_pc);
+
+  //getting the first four 4 bits of the next_pc value and adding the 26 bits from the instruction
+  temp = nextPCbinary.substr(0, 4) + instruction.substr(6, 26) + "00";
+  //setting the jump target equal to an integer value
+  jump_target = binaryToDec(temp);
 }

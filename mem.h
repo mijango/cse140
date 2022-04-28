@@ -1,29 +1,31 @@
-#include "mem.h"
 #include <iostream>
+#include <string>
+#include <unordered_map>
+#include "write_back.h"
 
 //receive memory address to write for SW
-void mem(int rr, int address)
+void mem(int rr, int address, std::unordered_map<std::string, int> &cu)
 {
     int new_value = 0;
-    int d_mem[32] = 0;
+    int d_mem[32] = {0};
     //each entry will be considered as one 4-byte memory space
     //if mem_read
-    if(mem_read = 1)
+    if(cu["mem_read"] = 1)
     {
         //for lw
         new_value = d_mem[address/4];
         //calling write_back to update
-        write_back(rr, new_value);
+        write_back(rr, new_value, cu);
     }
-    if()
+    if(cu["write"] = 1)
     {
         //for sw
         new_value = registerfile[rr];
-        write_back(address, new_value);
+        write_back(address, new_value, cu);
     }
     else
     {
         //call write back to update for I/R
-        write_back(rr, address);
+        write_back(rr, address,cu);
     }
 }

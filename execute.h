@@ -3,7 +3,7 @@
 #include "Data.h"
 
 //computation with alu
-void execute(Data dat, std::string alu_op, int alu_zero)
+void execute(Data &dat, int alu_zero)
 {
     //update alu_zero integer
     //calculate branch target
@@ -12,34 +12,34 @@ void execute(Data dat, std::string alu_op, int alu_zero)
     int one;
     int two;
 
-    if(dat.type = "r") {
-      one = binaryToDec(dat.rs);
-      two = binaryToDec(dat.rt);
-    } else if(dat.type = "i") {
-      one = binaryToDec(dat.rs);
-      two = binaryToDec(dat.rt);
+    if(dat.type == "r") {
+      one = dat.rs;
+      two = dat.rt;
+    } else if(dat.type == "i") {
+      one = dat.rs;
+      two = dat.rt;
     } else {
       //j type
     }
 
     int result = 0;
 
-    //ALU OP
-    if(alu_op == "0000") {//AND
+    //ALU OP computations
+    if(dat.aluOp == "0000") {//AND
         result = one & two;
-    } else if(alu_op == "0001") {//OR
+    } else if(dat.aluOp == "0001") {//OR
         result = one | two;
-    } else if(alu_op == "0010") {//add
+    } else if(dat.aluOp == "0010") {//add
         result = one + two;
-    } else if(alu_op == "0110") {//subtract
+    } else if(dat.aluOp == "0110") {//subtract
         result = one - two;
-    } else if(alu_op == "0111") {//set-on-less-than
+    } else if(dat.aluOp == "0111") {//set-on-less-than
         if(one < two) {
           result = 1;
         } else {
           result = 0;
         }
-    } else if(alu_op == "1100") {//NOR
+    } else if(dat.aluOp == "1100") {//NOR
         result = ~(one | two);
     }
 
@@ -52,16 +52,6 @@ void execute(Data dat, std::string alu_op, int alu_zero)
 
     //Branch target address
     
-}
-
-void jumpTarget(std::string instruction, int jump_target, int next_pc) {
-  std::string temp;
-  std::string nextPCbinary = decToBinary(next_pc);
-
-  //getting the first four 4 bits of the next_pc value and adding the 26 bits from the instruction
-  temp = nextPCbinary.substr(0, 4) + instruction.substr(3, 26) + "00";
-  //setting the jump target equal to an integer value
-  jump_target = binaryToDec(temp);
 }
 
 int branchTarget(std::string immediate, int next_pc)

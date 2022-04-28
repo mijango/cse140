@@ -1,11 +1,13 @@
 #include <iostream>
+#include <string>
+#include <unordered_map>
 
-void write_back(int rr, int value)
+void write_back(int rr, int value, std::unordered_map<std::string, int> &cu)
 {
   //where rr represents the 70 and value represents 1b
   //memory 0x70 is modified to 0x1b
   //writes back to register file
-    if(reg_write = 0)
+    if(cu["reg_write"] = 0)
     {
         d_mem[rr] = value; 
     }

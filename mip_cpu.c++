@@ -27,17 +27,15 @@ int jump_target = 0;
 int alu_zero = 0;
 int branch_target = 0;
 int total_clock_cycles = 0;
+int next_pc = 0;
 
 //registers and their mapped values
 string registernames[] = {"$zero, $at, $v0, $v1, $a0, $a1, $a2, $a3, $t0, $t1, $t2, $t3, $t4, $t5, $t6, $t7, $s0, $s1, $s2, $s3, $s4, $s5, $s6, $s7, $t8, $t9, $k0, $k1, $gp, $sp, $fp, $ra"};
 int registerfile[32] = {0};
 string modify_register;
 
-//variable where pc + 4 is stored
-int next_pc = 0;
-
 //Global control unit signals
-string controlsignals[] = {"reg_write", "reg_dst", "branch", "alu_src", "inst_type", "mem_write", "mem_to_reg", "mem_to_reg", "mem_read", "jump"}
+string controlsignals[] = {"reg_write", "reg_dst", "branch", "alu_src", "inst_type", "mem_write", "mem_to_reg", "mem_to_reg", "mem_read", "jump"};
 int controlvalues[9] = {0};
 
 main()
@@ -49,40 +47,39 @@ main()
     }
 
     //mapping control signals to ints;
-    unordered_map<string, int> cu
+    unordered_map<string, int> cu;
     for(int i = 0; i < sizeof(registernames)/sizeof(registernames[0]); i++) {
       cu[controlsignals[i]] = controlvalues[i];
     }
 
-    out<<hex<<regs[modify_register]<<endl;
+    cout<<hex<<regs[modify_register]<<endl;
 
     bool readFile = true;
     while(readFile) {
       
       //call fetch
-      string instruction = fetch(pc, next_pc, textfile[0]);
+      string instruction = fetch(pc, next_pc, textfiles[0]);
 
-      if( == "empty") {
-        readfile = false;
+      if(instruction == "empty") {
+        readFile = false;
         cout<<"program terminated:\ntotal execution time is" << total_clock_cycles <<"cycles";
       } else {
 
         //call decode
-        dat = decode(instruction, cu, regs, registernames);
+        decode(instruction, cu, regs, registernames, jump_target, next_pc, dat);
 
         //call execute
-        execute();
+        execute(dat, alu_zero);
 
         //call mem
-        mem();
+        //mem();
 
         //call writeback
-        write_back();
       }
     }
     
     // //output for sample_part1.txt and part2.txt excluding program termination
-    cout << "total_clock_cycles" << total_clock_cycles ":" << endl;
-    cout << " "" " modify_register "is modified to" << hex << regs [modify_register]<< endl;
+    cout << "total_clock_cycles" << total_clock_cycles << ":" << endl;
+    cout << modify_register << "is modified to" << hex << regs [modify_register]<< endl;
     cout << "pc is modified to" << hex << regs [modify_register] << endl; 
 }
