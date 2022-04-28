@@ -4,6 +4,7 @@
 #include "alu_control.h"
 #include "Data.h"
 
+//use return instruction from fetch() here
 //rtype instructions
  int opcode, rs, rt, rd, shamt, funct, immediate;
  std::string aluOp;

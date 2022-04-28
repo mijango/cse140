@@ -16,10 +16,13 @@ void execute(Data &dat, int alu_zero)
       one = dat.rs;
       two = dat.rt;
     } else if(dat.type == "i") {
-      one = dat.rs;
-      two = dat.rt;
+        one = dat.rs;
+        two = dat.rt;
     } else {
-      //j type
+        //j type has opcode and address only
+        dat.type == "j";
+        one = dat.opcode;
+        two = dat.immediaate;
     }
 
     int result = 0;

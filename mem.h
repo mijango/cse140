@@ -18,7 +18,8 @@ void mem(Data data, std::unordered_map<std::string, int> &cu, int d_mem[])
         //calling write_back to update
         write_back(rr, new_value, cu);
     }
-    if(cu["write"] = 1)
+    //if mem_write
+    if(cu["mem_write"] = 1)
     {
         //for sw
         new_value = registerfile[rr];
