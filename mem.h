@@ -11,7 +11,7 @@ void mem(Data data, std::unordered_map<std::string, int> &cu, int d_mem[])
 
     //each entry will be considered as one 4-byte memory space
     //if mem_read
-    if(cu["mem_read"] = 1)
+    if(cu["mem_read"] == 1)
     {
         //for lw
         new_value = d_mem[address/4];
@@ -19,15 +19,15 @@ void mem(Data data, std::unordered_map<std::string, int> &cu, int d_mem[])
         write_back(rr, new_value, cu);
     }
     //if mem_write
-    if(cu["mem_write"] = 1)
+    else if(cu["mem_write"] == 1)
     {
         //for sw
         new_value = registerfile[rr];
         write_back(address, new_value, cu);
     }
-    else
-    {
-        //call write back to update for I/R
-        write_back(rr, address,cu);
-    }
+    //else
+    // {
+    //     //call write back to update for I/R
+    //     write_back(rr, address,cu);
+    // }
 }

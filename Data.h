@@ -6,11 +6,13 @@
     std::string aluOp, rsName, rtName, rdName, type, opcode;
 
     Data() {
-      opcode, rs, rt, rd, shamt, funct = 0;
+      rs, rt, rd, shamt, funct = 0;
       aluOp = "";
       rsName = "";
       rtName = "";
       rdName = "";
+      type = "";
+      opcode = "";
     }
 
     // //copy constructor
