@@ -1,16 +1,28 @@
 #include <string>
-#include <conversions.h>
+#include "conversions.h"
+#include "Data.h"
 
 //computation with alu
-void execute(std::string registerOne, std::string registerTwo, std::string alu_op, int alu_zero)
+void execute(Data dat, std::string alu_op, int alu_zero)
 {
     //update alu_zero integer
     //calculate branch target
     //update branch_target
 
-    int one = binaryToDec(registerOne);
-    int two = binaryToDec(registerTwo);
-    int result;
+    int one;
+    int two;
+
+    if(dat.type = "r") {
+      one = binaryToDec(dat.rs);
+      two = binaryToDec(dat.rt);
+    } else if(dat.type = "i") {
+      one = binaryToDec(dat.rs);
+      two = binaryToDec(dat.rt);
+    } else {
+      //j type
+    }
+
+    int result = 0;
 
     //ALU OP
     if(alu_op == "0000") {//AND

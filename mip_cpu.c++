@@ -6,17 +6,20 @@
 #include <cmath>
 #include <string>
 #include <unordered_map>
-#include <conversions.h>
-#include <fetch.h>
-#include <decode.h>
-#include <execute.h>
+#include "fetch.h"
+#include "decode.h"
+#include "execute.h"
 #include "mem.h"
 #include "write_back.h"
 #include "control_unit.h"
+#include "alu_control.h"
+#include "Data.h"
+#include "conversions.h"
 
 using namespace std;
 
 string textfiles[] = {"sample_part1.text", "sample_part2.text"};
+Data dat;
 
 //global variables
 int pc = 0;
@@ -34,29 +37,26 @@ string modify_register;
 int next_pc = 0;
 
 //Global control unit signals
-int reg_write = 0;
-int reg_dst = 0;
-int branch = 0;
-int alu_src = 0;
-int inst_type = 0;
-int mem_write = 0;
-int mem_to_reg = 0;
-int mem_read = 0;
-int jump = 0;
+string controlsignals[] = {"reg_write", "reg_dst", "branch", "alu_src", "inst_type", "mem_write", "mem_to_reg", "mem_to_reg", "mem_read", "jump"}
+int controlvalues[9] = {0};
 
 main()
 {
-    //mappign registers and labels to hashtable
+    //mapping registers and labels to hashtable
     unordered_map<string, int> regs;
-
     for(int i = 0; i < sizeof(registernames)/sizeof(registernames[0]); i++) {
       regs[registernames[i]] = registerfile[i];
     }
 
-    cout<<hex<<regs[modify_register]<<endl;
+    //mapping control signals to ints;
+    unordered_map<string, int> cu
+    for(int i = 0; i < sizeof(registernames)/sizeof(registernames[0]); i++) {
+      cu[controlsignals[i]] = controlvalues[i];
+    }
+
+    out<<hex<<regs[modify_register]<<endl;
 
     bool readFile = true;
-
     while(readFile) {
       
       //call fetch
@@ -68,11 +68,14 @@ main()
       } else {
 
         //call decode
-        decode(instruction);
+        dat = decode(instruction, cu, regs, registernames);
+
         //call execute
         execute();
+
         //call mem
         mem();
+
         //call writeback
         write_back();
       }
