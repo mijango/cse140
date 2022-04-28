@@ -4,10 +4,11 @@
 #include "write_back.h"
 
 //receive memory address to write for SW
-void mem(int rr, int address, std::unordered_map<std::string, int> &cu)
+void mem(Data data, std::unordered_map<std::string, int> &cu, int d_mem[])
 {
     int new_value = 0;
-    int d_mem[32] = {0};
+    int rr, address;
+
     //each entry will be considered as one 4-byte memory space
     //if mem_read
     if(cu["mem_read"] = 1)

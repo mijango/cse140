@@ -38,6 +38,9 @@ string modify_register;
 string controlsignals[] = {"reg_write", "reg_dst", "branch", "alu_src", "inst_type", "mem_write", "mem_to_reg", "mem_to_reg", "mem_read", "jump"};
 int controlvalues[9] = {0};
 
+//Dmem memory locations
+int d_mem[32] = {0};
+
 main()
 {
     //mapping registers and labels to hashtable
@@ -72,7 +75,7 @@ main()
         execute(dat, alu_zero);
 
         //call mem
-        //mem();
+        mem(dat, cu, d_mem);
 
         //call writeback
       }
