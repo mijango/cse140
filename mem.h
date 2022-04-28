@@ -2,20 +2,28 @@
 #include <iostream>
 
 //receive memory address to write for SW
-void mem()
+void mem(int rr, int address)
 {
+    int new_value = 0;
     int d_mem[32] = 0;
     //each entry will be considered as one 4-byte memory space
     //if mem_read
     if(mem_read = 1)
     {
-        int mem_data = d_mem[ int address/4];
-        write_back(rt, mem_data);
+        //for lw
+        new_value = d_mem[address/4];
+        //calling write_back to update
+        write_back(rr, new_value);
+    }
+    if()
+    {
+        //for sw
+        new_value = registerfile[rr];
+        write_back(address, new_value);
     }
     else
     {
-        mem_write = 1;
-        d_mem[address/4] = register_file[rt];
-        write_back(r, address);
+        //call write back to update for I/R
+        write_back(rr, address);
     }
 }
