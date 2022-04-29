@@ -16,6 +16,7 @@ std::string alu_control(int funct) {
    else if (funct == 39) {
     return "1100"; //NOR
   }
+  return "";
 }
 
 //get alu_op code for sw, lw and jeq

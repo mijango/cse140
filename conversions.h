@@ -8,7 +8,7 @@ int binaryToDec(std::string str) {
   double decimalVal = 0;
   //converting to decimal
   for(int i = str.size()-1, exponent = 0; i >= 0; i--, exponent++) {
-    binaryVal = stoi(str.substr(i,1));
+    binaryVal = std::stoi(str.substr(i,1));
     decimalVal += binaryVal*pow(2,exponent);
   }
   int result = decimalVal;

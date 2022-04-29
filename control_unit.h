@@ -1,7 +1,7 @@
 #include <iostream>
 #include <unordered_map>
 
-void control_unit(std::string opcode, std::unordered_map<std::string, int> cu)
+void control_unit(std::string opcode, std::unordered_map<std::string, int> &cu)
 {
   //receive the 6 bit opcode value and generate 9 control signals
   // r format add,sub,and,or,slt,nor

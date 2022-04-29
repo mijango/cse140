@@ -6,7 +6,7 @@
     std::string aluOp, rsName, rtName, rdName, type, opcode;
 
     Data() {
-      rs, rt, rd, shamt, funct = 0;
+      rs = rt = rd = shamt = funct = 0;
       aluOp = "";
       rsName = "";
       rtName = "";

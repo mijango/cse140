@@ -4,10 +4,11 @@
 #include "write_back.h"
 
 //receive memory address to write for SW
-void mem(Data data, std::unordered_map<std::string, int> &cu, int d_mem[])
+void mem(int alu_result, Data data, std::unordered_map<std::string, int> &cu, int d_mem[], int regs[], int total_clock_cycles)
 {
     int new_value = 0;
-    int rr, address;
+    int rt = data.rt;
+    int address = alu_result;
 
     //each entry will be considered as one 4-byte memory space
     //if mem_read
@@ -16,18 +17,18 @@ void mem(Data data, std::unordered_map<std::string, int> &cu, int d_mem[])
         //for lw
         new_value = d_mem[address/4];
         //calling write_back to update
-        write_back(rr, new_value, cu);
+
+        //alu_result - /address
+        write_back(data, new_value, cu, d_mem, total_clock_cycles);
     }
     //if mem_write
     else if(cu["mem_write"] == 1)
     {
         //for sw
-        new_value = registerfile[rr];
-        write_back(address, new_value, cu);
+        // new_value = registerfile[rt];
+        write_back(data, address, cu, d_mem, total_clock_cycles);
+    } else {
+        //passing result only
+        //write_back()
     }
-    //else
-    // {
-    //     //call write back to update for I/R
-    //     write_back(rr, address,cu);
-    // }
 }

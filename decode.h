@@ -9,12 +9,21 @@
  int opcode, rs, rt, rd, shamt, funct, immediate;
  std::string aluOp;
 
+ //declared functions
+ std::string readOpcode(std::string opcode, Data &data);
+ void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data);
+ void itypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data);
+ void jtypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data);
+ std::string signExtension(std::string immediate);
+ void jumpTarget(std::string instruction, int jump_target, int next_pc);
+ 
+
 //decode()  will read instruction values from a register file and use the control units
 void decode(std::string instruction, std::unordered_map<std::string, int> &cu, std::unordered_map<std::string, int> &regs, std::string names[], int jump_target, int next_pc, Data &data)
 {
     //get type of instruction, from bits 31-26
     data.type = readOpcode(instruction.substr(0,6), data);
-    data.opcode = binaryToDec(data.type);
+    data.opcode = instruction.substr(0,6);
 
     //calling control_unit function to update and generate control signals
     control_unit(data.opcode, cu);
@@ -224,6 +233,7 @@ void jumpTarget(std::string instruction, int jump_target, int next_pc) {
   std::string temp;
   std::string nextPCbinary = decToBinary(next_pc);
 
+  //shift left 2
   //getting the first four 4 bits of the next_pc value and adding the 26 bits from the instruction
   temp = nextPCbinary.substr(0, 4) + instruction.substr(6, 26) + "00";
   //setting the jump target equal to an integer value

@@ -1,9 +1,9 @@
 #include <string>
-#include "conversions.h"
-#include "Data.h"
+
+int branchTarget(std::string immediate, int next_pc);
 
 //computation with alu
-void execute(Data &dat, int alu_zero)
+int execute(Data &dat, int alu_zero)
 {
     //update alu_zero integer
     //calculate branch target
@@ -52,8 +52,8 @@ void execute(Data &dat, int alu_zero)
       alu_zero = 0;
     }
 
+    return result;
     //Branch target address
-    
 }
 
 int branchTarget(std::string immediate, int next_pc)

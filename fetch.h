@@ -1,19 +1,18 @@
 #include <string>
 #include <fstream>
+#include <iostream>
 
 //string fetch () function that grabs one instruction per cycle
-std::string fetch(int pc, int next_pc, std::string textfile  )
+std::string fetch(int &pc, int &next_pc, std::string textfile)
 {   
     //represents instruction
     std::string instruction;
     //represents file
-    std::fstream file;
+    std::ifstream file(textfile);
     //represents line
     std::string line;
-    //to open file
-    file.open(textfile);
 
-    int current = 1;
+    int current = 0;
     int target = pc/4;
     //if no instruction is fetch, print empty
     instruction = "empty";
@@ -28,6 +27,7 @@ std::string fetch(int pc, int next_pc, std::string textfile  )
         }
         current++;
     }
+    file.close();
     //storing pc + 4 
     next_pc = pc + 4;
     return instruction;
