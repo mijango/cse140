@@ -2,7 +2,7 @@
 #include <string>
 #include <unordered_map>
 
-void write_back(Data &data, int value, std::unordered_map<std::string, int> &cu, std::unordered_map<std::string, int> &regs, int d_mem[], int total_clock_cycles)
+void write_back(Data &data, int value, std::unordered_map<std::string, int> &cu, std::unordered_map<std::string, int> &regs, int d_mem[])
 {
   //where rr represents the 70 and value represents 1b
 
@@ -12,6 +12,9 @@ void write_back(Data &data, int value, std::unordered_map<std::string, int> &cu,
     {
         if(cu["reg_dst"] == 1) {
           regs[data.rdName] = value;
+          if(cu["mem_write"] == 1) {
+            d_mem[value/4] = data.rt;
+          }
         } else {
           regs[data.rtName] = value;
         } 
@@ -24,7 +27,4 @@ void write_back(Data &data, int value, std::unordered_map<std::string, int> &cu,
           regs[data.rtName] = value;
         } 
     }
-        
-  //increment total_clocl_cycles by 1 when one instruction is finished
-  //total_clock_cycles = total_clock_cycles + 1;
 }

@@ -72,13 +72,13 @@ int main()
         decode(instruction, cu, regs, registernames, jump_target, next_pc, dat);
 
         //call execute
-        int alu_result = execute(dat, alu_zero, branch_target, next_pc);
+        int alu_result = execute(dat, alu_zero, branch_target, pc);
 
         if(cu["branch"] == 1) {
           pc = branch_target;
         } else {
           //call mem
-          mem(alu_result, dat, cu, d_mem, regs, total_clock_cycles);
+          mem(alu_result, dat, cu, d_mem, regs);
         }
 
         total_clock_cycles = total_clock_cycles + 1;
@@ -86,25 +86,26 @@ int main()
         print();
       }
     }
-    cout<<" program terminated:\ntotal execution time is " << total_clock_cycles <<" cycles";
+    cout<<"program terminated:\ntotal execution time is " << total_clock_cycles <<" cycles";
 }
 
 void print() {
   if(dat.type == "r") { 
-    cout << " total_clock_cycles " << total_clock_cycles << " :" << endl;
-    cout << dat.rdName << " is modified to " << hex << regs[dat.rdName] << endl;
-    cout << "pc is modified to 0x" << hex << pc << endl;
+    cout << "total_clock_cycles " << total_clock_cycles << ":" << endl;
+    cout << dat.rdName << " is modified to 0x" << hex << regs[dat.rdName] << endl;
+    cout << "pc is modified to 0x" << hex << pc << endl << endl;
   } else if(dat.type == "i") {
-    cout << " total_clock_cycles " << total_clock_cycles << " :" << endl;
+    cout << "total_clock_cycles " << total_clock_cycles << ":" << endl;
+  
     if(binaryToDec(dat.opcode) == 43) {
-      cout << dat.rsName << " is modified to " << hex << regs[dat.rsName] << endl;
-    } else if(binaryToDec(dat.opcode) == 4) {
+      cout << "memory 0x" << regs[dat.rsName] << " is modified to 0x" << hex << d_mem[28] << endl;
+    } else if(binaryToDec(dat.opcode) == 4) {//skip for beq
     } else {
-      cout << dat.rtName << " is modified to " << hex << regs[dat.rtName] << endl;
+      cout << dat.rtName << " is modified to 0x" << hex << regs[dat.rtName] << endl;
     }
-    cout << "pc is modified to 0x" << hex << pc << endl;
+    cout << "pc is modified to 0x" << hex << pc << endl << endl;
   } else {
-    cout << " total_clock_cycles " << total_clock_cycles << " :" << endl;
-    cout << "pc is modified to 0x" << hex << pc << endl;
+    cout << "total_clock_cycles " << total_clock_cycles << ":" << endl;
+    cout << "pc is modified to 0x" << hex << pc << endl << endl;
   }
 }

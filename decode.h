@@ -84,44 +84,6 @@ void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &r
 
   //getting alu op
   data.aluOp = alu_control(data.funct);
-
-  // if(funct == 32) {
-  //   operation = "add";
-  // }
-  // else if(funct == 33) {
-  //   operation = "addu";
-  // }
-  // else if(funct == 36) {
-  //   operation = "addu";
-  // }
-  // else if(funct == 8) {
-  //   operation = "jr";
-  // }
-  // else if(funct == 39) {
-  //   operation = "nor";
-  // }
-  // else if(funct == 37) {
-  //   operation = "or";
-  // }
-  // else if(funct == 42) {
-  //   operation = "slt";
-  // }
-  // else if(funct == 43) {
-  //   operation = "sltu";
-  // }
-  // else if(funct == 0) {
-  //   operation = "sll";
-  // }
-  // else if(funct == 2) {
-  //   operation = "srl";
-  // }
-  // else if(funct == 34) {
-  //   operation = "sub";
-  // }
-  // else if(funct == 35) {
-  //   operation = "subu";
-  // }
-
 }
 
 //decoding a immediate instruction
@@ -143,62 +105,17 @@ void itypeInstruction(std::string code, std::unordered_map<std::string, int> &re
    //converting op
   int op = binaryToDec(code.substr(0,6));
 
-  // if(op == 8) {
-  //   operation = "addi";
-  // }
-  // else if(op == 9) {
-  //   operation = "addiu";
-  // }
-  // else if(op == 12) {
-  //   operation = "andi";
-  // }
-  // else 
   if(op == 4) {
     operation = "beq";
     //getting alu op for beq
     data.aluOp = alu_control("01");
     return;
-  }
-  // else if(op == 5) {
-  //   operation = "bne";
-  // }
-  // else if(op == 36) {
-  //   operation = "lbu";
-  // }
-  // else if(op == 37) {
-  //   operation = "lhu";
-  // }
-  // else if(op == 48) {
-  //   operation = "ll";
-  // }
-  // else if(op == 15) {
-  //   operation = "lui";
-  // }
-  else if(op == 35) {
+  } else if(op == 35) {
     operation = "lw";
     //getting alu op for lw
     data.aluOp = alu_control("00");
     return;
-  }
-  // else if(op == 13) {
-  //   operation = "ori";
-  // }
-  // else if(op == 10) {
-  //   operation = "slti";
-  // }
-  // else if(op == 11) {
-  //   operation = "sltiu";
-  // }
-  // else if(op == 40) {
-  //   operation = "sb";
-  // }
-  // else if(op == 56) {//
-  //   operation = "sc";
-  // }
-  // else if(op == 41) {
-  //   operation = "sh";
-  // }
-  else if(op == 43) {
+  } else if(op == 43) {
     operation = "sw";
     //getting alu op for sw
     data.aluOp = alu_control("00");
@@ -229,7 +146,6 @@ void jumpTarget(std::string instruction, int jump_target, int next_pc) {
   std::string nextPCbinary = decToBinary(next_pc);
 
   //shift left 2
-  //getting the first four 4 bits of the next_pc value and adding the 26 bits from the instruction
   temp = nextPCbinary.substr(0, 4) + instruction.substr(6, 26) + "00";
   //setting the jump target equal to an integer value
   jump_target = binaryToDec(temp);
