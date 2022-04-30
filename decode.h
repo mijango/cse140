@@ -14,12 +14,11 @@
  void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data);
  void itypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data);
  void jtypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data);
- std::string signExtension(std::string immediate);
  void jumpTarget(std::string instruction, int jump_target, int next_pc);
  
 
 //decode()  will read instruction values from a register file and use the control units
-void decode(std::string instruction, std::unordered_map<std::string, int> &cu, std::unordered_map<std::string, int> &regs, std::string names[], int jump_target, int next_pc, Data &data)
+void decode(std::string instruction, std::unordered_map<std::string, int> &cu, std::unordered_map<std::string, int> &regs, std::string names[], int &jump_target, int next_pc, Data &data)
 {
     //get type of instruction, from bits 31-26
     data.type = readOpcode(instruction.substr(0,6), data);
@@ -46,13 +45,16 @@ void decode(std::string instruction, std::unordered_map<std::string, int> &cu, s
  //reading in opcode to find type
 std::string readOpcode(std::string opcode, Data &data) {
   
-  if(data.opcode == "000000") {
+  if(opcode == "000000") {
+    data.opcode = opcode;
     return "r";
   }
-  else if(data.opcode == "000010" || opcode == "000011") {
+  else if(opcode == "000010" || opcode == "000011") {
+    data.opcode = opcode;
     return "j";
   }
   else {
+    data.opcode = opcode;
     return "i";
   }
 }
@@ -83,42 +85,42 @@ void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &r
   //getting alu op
   data.aluOp = alu_control(data.funct);
 
-  if(funct == 32) {
-    operation = "add";
-  }
-  else if(funct == 33) {
-    operation = "addu";
-  }
-  else if(funct == 36) {
-    operation = "addu";
-  }
-  else if(funct == 8) {
-    operation = "jr";
-  }
-  else if(funct == 39) {
-    operation = "nor";
-  }
-  else if(funct == 37) {
-    operation = "or";
-  }
-  else if(funct == 42) {
-    operation = "slt";
-  }
-  else if(funct == 43) {
-    operation = "sltu";
-  }
-  else if(funct == 0) {
-    operation = "sll";
-  }
-  else if(funct == 2) {
-    operation = "srl";
-  }
-  else if(funct == 34) {
-    operation = "sub";
-  }
-  else if(funct == 35) {
-    operation = "subu";
-  }
+  // if(funct == 32) {
+  //   operation = "add";
+  // }
+  // else if(funct == 33) {
+  //   operation = "addu";
+  // }
+  // else if(funct == 36) {
+  //   operation = "addu";
+  // }
+  // else if(funct == 8) {
+  //   operation = "jr";
+  // }
+  // else if(funct == 39) {
+  //   operation = "nor";
+  // }
+  // else if(funct == 37) {
+  //   operation = "or";
+  // }
+  // else if(funct == 42) {
+  //   operation = "slt";
+  // }
+  // else if(funct == 43) {
+  //   operation = "sltu";
+  // }
+  // else if(funct == 0) {
+  //   operation = "sll";
+  // }
+  // else if(funct == 2) {
+  //   operation = "srl";
+  // }
+  // else if(funct == 34) {
+  //   operation = "sub";
+  // }
+  // else if(funct == 35) {
+  //   operation = "subu";
+  // }
 
 }
 
@@ -137,64 +139,65 @@ void itypeInstruction(std::string code, std::unordered_map<std::string, int> &re
 
   data.rtName = names[data.rt];
   data.rt = regs[data.rtName];
-  
-  //converting op
+
+   //converting op
   int op = binaryToDec(code.substr(0,6));
 
-  if(op == 8) {
-    operation = "addi";
-  }
-  else if(op == 9) {
-    operation = "addiu";
-  }
-  else if(op == 12) {
-    operation = "andi";
-  }
-  else if(op == 4) {
+  // if(op == 8) {
+  //   operation = "addi";
+  // }
+  // else if(op == 9) {
+  //   operation = "addiu";
+  // }
+  // else if(op == 12) {
+  //   operation = "andi";
+  // }
+  // else 
+  if(op == 4) {
     operation = "beq";
     //getting alu op for beq
     data.aluOp = alu_control("01");
     return;
   }
-  else if(op == 5) {
-    operation = "bne";
-  }
-  else if(op == 36) {
-    operation = "lbu";
-  }
-  else if(op == 37) {
-    operation = "lhu";
-  }
-  else if(op == 48) {
-    operation = "ll";
-  }
-  else if(op == 15) {
-    operation = "lui";
-  }
+  // else if(op == 5) {
+  //   operation = "bne";
+  // }
+  // else if(op == 36) {
+  //   operation = "lbu";
+  // }
+  // else if(op == 37) {
+  //   operation = "lhu";
+  // }
+  // else if(op == 48) {
+  //   operation = "ll";
+  // }
+  // else if(op == 15) {
+  //   operation = "lui";
+  // }
   else if(op == 35) {
     operation = "lw";
     //getting alu op for lw
     data.aluOp = alu_control("00");
     return;
   }
-  else if(op == 13) {
-    operation = "ori";
-  }
-  else if(op == 10) {
-    operation = "slti";
-  }
-  else if(op == 11) {
-    operation = "sltiu";
-  }
-  else if(op == 40) {
-    operation = "sb";
-  }
-  else if(op == 56) {//
-    operation = "sc";
-  }
-  else if(op == 41) {
-    operation = "sh";
-  }
+  // else if(op == 13) {
+  //   operation = "ori";
+  // }
+  // else if(op == 10) {
+  //   operation = "slti";
+  // }
+  // else if(op == 11) {
+  //   operation = "sltiu";
+  // }
+  // else if(op == 40) {
+  //   operation = "sb";
+  // }
+  // else if(op == 56) {//
+  //   operation = "sc";
+  // }
+  // else if(op == 41) {
+  //   operation = "sh";
+  // }
   else if(op == 43) {
     operation = "sw";
     //getting alu op for sw
@@ -219,14 +222,6 @@ void jtypeInstruction(std::string code, std::unordered_map<std::string, int> &re
   else if(op == 3) {
     operation = "jal";
   }
-}
-
-std::string signExtension(std::string immediate) { 
-  std::string extended = "";
-  //immediate is 16 bits, add 16 zeros in front
-  extended = "0000000000000000";
-  extended += immediate;
-  return extended;
 }
 
 void jumpTarget(std::string instruction, int jump_target, int next_pc) {

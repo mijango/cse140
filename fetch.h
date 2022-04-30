@@ -22,6 +22,11 @@ std::string fetch(int &pc, int &next_pc, std::string textfile)
         if(current == target) {
             //increment pc variable by 4
             pc += 4;
+            //removing /r return characters
+            if(line.size() > 32) {
+                instruction = line.substr(0,32);
+                break;
+            }
             instruction = line;
             break;
         }
