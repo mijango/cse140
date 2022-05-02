@@ -5,11 +5,8 @@
 //string fetch () function that grabs one instruction per cycle
 std::string fetch(int &pc, int &next_pc, std::string textfile)
 {   
-    //represents instruction
     std::string instruction;
-    //represents file
     std::ifstream file(textfile);
-    //represents line
     std::string line;
 
     int current = 0;

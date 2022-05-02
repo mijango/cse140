@@ -15,20 +15,6 @@
       opcode = "";
     }
 
-    // //copy constructor
-    // Data (const Data &d) {
-    //   this->opcode = d.opcode;
-    //   this->rs = d.rs;
-    //   this->rt = d.rt;
-    //   this->rd = d.rd;
-    //   this->shamt = d.shamt;
-    //   this->funct = d.funct;
-    //   this->aluOp = d.aluOp;
-    //   this->rsName = d.rsName;
-    //   this->rtName = d.rtName;
-    //   this->rdName = d.rdName;
-    // }
-
     //operator = overload 
     Data operator = (const Data& d) const {
       Data dat;

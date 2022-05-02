@@ -11,14 +11,14 @@
 
  //declared functions
  std::string readOpcode(std::string opcode, Data &data);
- void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data);
+ void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data, int &pc);
  void itypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data);
- void jtypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data);
- void jumpTarget(std::string instruction, int jump_target, int next_pc);
+ void jtypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data, int &pc);
+ void jumpTarget(std::string instruction, int &jump_target, int next_pc);
  
 
 //decode()  will read instruction values from a register file and use the control units
-void decode(std::string instruction, std::unordered_map<std::string, int> &cu, std::unordered_map<std::string, int> &regs, std::string names[], int &jump_target, int next_pc, Data &data)
+void decode(std::string instruction, std::unordered_map<std::string, int> &cu, std::unordered_map<std::string, int> &regs, std::string names[], int &jump_target, int &next_pc, Data &data, int &pc)
 {
     //get type of instruction, from bits 31-26
     data.type = readOpcode(instruction.substr(0,6), data);
@@ -29,10 +29,10 @@ void decode(std::string instruction, std::unordered_map<std::string, int> &cu, s
 
     //reading registers depending on type of instruction
     if(data.type == "r") {
-        rtypeInstruction(instruction, regs, names, data);
+        rtypeInstruction(instruction, regs, names, data, pc);
     }
     else if(data.type == "j") {
-        jtypeInstruction(instruction, regs, names, data);
+        jtypeInstruction(instruction, regs, names, data, pc);
     }
     else {
         itypeInstruction(instruction, regs, names, data);
@@ -41,6 +41,7 @@ void decode(std::string instruction, std::unordered_map<std::string, int> &cu, s
     jumpTarget(instruction, jump_target, next_pc);
 
 }
+
 
  //reading in opcode to find type
 std::string readOpcode(std::string opcode, Data &data) {
@@ -59,8 +60,9 @@ std::string readOpcode(std::string opcode, Data &data) {
   }
 }
 
+
 //decoding a register instruction
-void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data) {
+void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data, int &pc) {
   std::string operation = "";
 
   //finding registers and shamt
@@ -84,7 +86,14 @@ void rtypeInstruction(std:: string code, std::unordered_map<std::string, int> &r
 
   //getting alu op
   data.aluOp = alu_control(data.funct);
+
+  if(data.funct == 8) {
+    operation = "jr";
+    //reading $ra for pc
+    pc = regs["$ra"];
+  }
 }
+
 
 //decoding a immediate instruction
 void itypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data) {
@@ -123,8 +132,9 @@ void itypeInstruction(std::string code, std::unordered_map<std::string, int> &re
   }
 }
 
+
 //decoding a jump instruction
-void jtypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data) {
+void jtypeInstruction(std::string code, std::unordered_map<std::string, int> &regs, std::string names[], Data &data, int &pc) {
   std::string operation = "";
 
   //finding address
@@ -138,10 +148,12 @@ void jtypeInstruction(std::string code, std::unordered_map<std::string, int> &re
   }
   else if(op == 3) {
     operation = "jal";
+    regs["$ra"] = pc;
   }
 }
 
-void jumpTarget(std::string instruction, int jump_target, int next_pc) {
+
+void jumpTarget(std::string instruction, int &jump_target, int next_pc) {
   std::string temp;
   std::string nextPCbinary = decToBinary(next_pc);
 

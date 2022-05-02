@@ -18,8 +18,6 @@ int execute(Data &dat, int &alu_zero, int &branch_target, int &next_pc)
     } else if(dat.type == "i") {
       one = dat.rs;
       two = dat.immediate;
-    } else {
-      //j type
     }
 
     int result = 0;

@@ -4,7 +4,8 @@
 void control_unit(std::string opcode, std::unordered_map<std::string, int> &cu)
 {
   //receive the 6 bit opcode value and generate 9 control signals
-  // r format add,sub,and,or,slt,nor
+
+  // R format add, sub, and, or, slt, nor
   if (opcode == "000000") 
     {                      
         cu["reg_write"] = 1;
@@ -17,7 +18,7 @@ void control_unit(std::string opcode, std::unordered_map<std::string, int> &cu)
         cu["mem_read"] = 0;
         cu["jump"] = 0;
     }
-    // lw
+    // LW
     if (opcode == "100011")
     { 
         cu["reg_write"] = 1;
@@ -30,7 +31,7 @@ void control_unit(std::string opcode, std::unordered_map<std::string, int> &cu)
         cu["mem_read"] = 1;
         cu["jump"] = 0;
     }
-    // sw
+    // SW
     if (opcode == "101011")
     { 
         cu["reg_write"] = 0;
@@ -41,7 +42,7 @@ void control_unit(std::string opcode, std::unordered_map<std::string, int> &cu)
         cu["mem_read"] = 0;
         cu["jump"] = 0;
     }
-    // beq
+    // BEQ
     if (opcode == "000100")
     { 
         cu["reg_write"] = 0;
@@ -52,7 +53,7 @@ void control_unit(std::string opcode, std::unordered_map<std::string, int> &cu)
         cu["mem_read"] = 0;
         cu["jump"] = 0;
     }
-    // J format
+    // J and JAL
     if (opcode == "000011" || opcode == "000010") 
     {
         cu["reg_write"] = 0;
@@ -61,5 +62,4 @@ void control_unit(std::string opcode, std::unordered_map<std::string, int> &cu)
         cu["mem_read"] = 0;
         cu["jump"] = 1;
     }
-    //JAL and JR
 }
