@@ -1,5 +1,8 @@
  #include <string>
 
+//This is a user-defined class to save the instructions data values and names
+//it will be used to print the instrucitons data
+
  class Data {
   public:
     int rs, rt, rd, shamt, funct, immediate;
